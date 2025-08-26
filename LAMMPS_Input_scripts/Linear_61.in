@@ -51,7 +51,7 @@ thermo_style	custom step temp pe etotal press vol epair ebond eangle ecoul
 
 reset_timestep  0
 
-timestep        0.0005
+timestep        0.0001
 
 thermo          100
 
