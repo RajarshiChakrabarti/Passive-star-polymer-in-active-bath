@@ -54,7 +54,7 @@ restart         50000000 system_equil.data
 
 #dump            4 all custom 1000 traju_nve_f10_flexi_star.lammpstrj id type x y z ix iy iz
 
-dump           2 poly custom 100 poly_pos_equil_extend_10_3.dat id type xu yu zu 
+dump           2 poly custom 100 poly_pos_equil_extend_10_3.dat id type xu yu zu vx vy vz
 
 run             600000000
 
