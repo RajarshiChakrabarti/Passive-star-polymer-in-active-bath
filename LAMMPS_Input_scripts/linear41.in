@@ -59,8 +59,8 @@ restart         50000000 system_equil_linear.data
 
 #dump            4 all custom 5000 traju_nve_cyl_equil_0.005_linea_10_41_2_star.lammpstrj id type x y z ix iy iz
 
-dump           2 poly custom 100 poly_pos_equil_0.005_linear_41_0_8.dat id type xu yu zu 
+dump           2 poly custom 100 poly_pos_equil_0.005_linear_41_0_8.dat id type xu yu zu vx vy vz
 
-run             150000000
+run             600000000
 
 
