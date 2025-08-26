@@ -56,7 +56,7 @@ restart         50000000 system_equil.data
 
 dump           2 pps custom 100 poly_pos_equil_pps_extend_40_3.dat id type xu yu zu vx vy vz
 
-run             250000000
+run             600000000
 
 
 
