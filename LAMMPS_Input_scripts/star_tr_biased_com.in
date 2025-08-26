@@ -1,0 +1,84 @@
+####################### Initialization Section ######################
+#variable 	seed		file 	seed_input.txt
+units           lj
+
+dimension       2
+
+boundary 	p p p
+
+atom_style      hybrid angle ellipsoid
+
+neighbor        0.3 bin
+
+neigh_modify    every 1 delay 0 check yes
+
+read_restart   system_equil.data.10000000
+
+group          tracer type 4 
+
+group          arm1 type 1 
+
+group          arm2 type 2
+
+group          arm3 type 3
+
+group   group1 id 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
+group    group2 id 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42
+
+bond_style fene
+
+bond_coeff * 30.0 1.5 1.0 1.0
+
+
+pair_style      lj/cut 1.122462
+
+pair_coeff      * * 1 1 1.122462
+
+############################# main run ----- compute ##############################
+
+fix             4 all nve/asphere
+
+fix             5 all langevin 1.0 1.0 0.005 156743 angmom 3.333
+
+#fix             6 tracer propel/self quat 50.0
+
+compute com1 arm1 com
+
+compute com2 arm2 com
+
+fix             1 all enforce2d
+
+fix             2 all setforce NULL NULL 0.0
+
+compute force_gg1 arm1 group/group arm2
+variable press_gg1 equal (c_force_gg1[1]+c_force_gg1[2])/2.0
+
+thermo_style	custom step temp pe etotal press vol epair ebond eangle ecoul v_press_gg1
+
+fix 3 all ave/time 1000 1 1000 v_press_gg1 file dump_forces_9_5.lammps
+
+#log dump_forces.lammps
+
+
+fix             colvars all colvars colvars.conf
+
+
+#reset_timestep  0
+
+timestep        0.0005
+
+thermo          100
+
+restart         50000000 system_equil.data
+
+#dump            4 all custom 1000 traju_nve_f0_9_flexi_star.lammpstrj id type x y z ix iy iz
+
+#dump            1 all custom 1000 dump_forces.lammps v_press_gg1
+
+
+#dump           2 poly custom 100 poly_pos_equil_extend_50_12.dat id type xu yu zu vx vy vz
+
+run             50000000
+
+
+

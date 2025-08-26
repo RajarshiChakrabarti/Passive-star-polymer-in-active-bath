@@ -1,0 +1,62 @@
+####################### Initialization Section ######################
+units           lj
+
+dimension       2
+
+boundary 	p p p
+
+atom_style      hybrid angle ellipsoid
+
+neighbor        0.3 bin
+
+neigh_modify    every 1 delay 0 check yes
+
+read_restart   system_equil.data.10000000
+
+group          tracer type 4 
+
+group          poly type 1 2 3
+
+group          com id 10021
+
+bond_style fene
+
+bond_coeff * 30.0 1.5 1.0 1.0
+
+
+pair_style      lj/cut 1.122462
+
+pair_coeff      * * 1 1 1.122462
+
+
+############################# main run ----- compute ##############################
+
+fix             4 all nve/asphere
+
+fix             5 all langevin 1.0 1.0 0.005 123458 angmom 3.333
+
+fix             6 tracer propel/self quat 10.0
+
+fix             1 all enforce2d
+
+fix             2 all setforce NULL NULL 0.0
+
+thermo_style	custom step temp pe etotal press vol epair ebond eangle ecoul
+
+
+reset_timestep  0
+
+timestep        0.0005
+
+thermo          100
+
+restart         50000000 system_equil.data
+
+#dump            4 all custom 1000 traju_nve_f10_flexi_star.lammpstrj id type x y z ix iy iz
+
+dump           2 poly custom 100 poly_pos_equil_extend_10_3.dat id type xu yu zu 
+
+run             600000000
+
+
+

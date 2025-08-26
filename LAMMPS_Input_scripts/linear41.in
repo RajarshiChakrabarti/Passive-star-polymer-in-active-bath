@@ -1,0 +1,66 @@
+####################### Initialization Section ######################
+#variable 	seed		file 	seed_input.txt
+units           lj
+
+dimension       2
+
+boundary 	p p p
+
+atom_style      hybrid angle ellipsoid
+
+neighbor        0.3 bin
+
+neigh_modify    every 1 delay 0 check yes
+
+read_restart   system_equil_linear41.data.10000000
+
+group          tracer type 3 
+
+group          poly type 1 2
+
+bond_style fene
+
+bond_coeff * 30.0 1.5 1.0 1.0
+
+
+pair_style      lj/cut 1.122462
+
+pair_coeff      * * 1 1 1.122462
+
+#minimize        1e-5 1e-5 10000 100000
+
+
+############################# main run ----- compute ##############################
+
+fix             4 all nve/asphere
+
+fix             5 all langevin 1.0 1.0 0.005 382165 angmom 3.333
+
+#fix             6 tracer propel/self quat 10.0
+
+
+fix             1 all enforce2d
+
+fix             2 all setforce NULL NULL 0.0
+
+thermo_style	custom step temp pe etotal press vol epair ebond eangle ecoul
+
+#compute         myRDF tracer rdf 200  cutoff 10.0
+
+#fix            3 all ave/time 500 1 500 c_myRDF[*] file tmp.rdf mode vector
+
+reset_timestep  0
+
+timestep        0.0005
+
+thermo          100
+
+restart         50000000 system_equil_linear.data
+
+#dump            4 all custom 5000 traju_nve_cyl_equil_0.005_linea_10_41_2_star.lammpstrj id type x y z ix iy iz
+
+dump           2 poly custom 100 poly_pos_equil_0.005_linear_41_0_8.dat id type xu yu zu 
+
+run             150000000
+
+
